@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "SplitEase — Smart Group Expense Splitter",
@@ -18,17 +19,28 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0ea5e9", // Updated theme color
+  themeColor: "#0ea5e9",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Anti-flash: apply saved / system theme before paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var saved = localStorage.getItem('splitease-theme');
+                var system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                var theme = saved || system;
+                if (theme === 'dark') document.documentElement.classList.add('dark');
+              } catch(e){}
+            `,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -37,7 +49,11 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        {children}
+        {/* Animated floating blob layer — sits behind all content */}
+        <div className="bg-blob-layer" aria-hidden="true" />
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

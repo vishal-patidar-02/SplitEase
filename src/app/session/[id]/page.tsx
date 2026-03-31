@@ -2,18 +2,18 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Plus, Share2, ArrowLeft, Copy, Clock, Filter, SlidersHorizontal, Settings, Trash2 } from 'lucide-react';
+import { Plus, Share2, ArrowLeft, Copy, Clock, SlidersHorizontal, Settings } from 'lucide-react';
 import { useSessionStore } from '@/lib/store';
 import { ToastProvider, useToast } from '@/components/Toast';
+import { ThemeToggle } from '@/components/ThemeProvider';
 import { cn, getShareableLink, copyToClipboard } from '@/lib/utils';
 import { Expense } from '@/lib/types';
 
-// Components
-import MembersCard from '@/components/MembersCard';
-import ExpenseListCard from '@/components/ExpenseListCard';
+import MembersCard      from '@/components/MembersCard';
+import ExpenseListCard  from '@/components/ExpenseListCard';
 import BalanceSummaryCard from '@/components/BalanceSummaryCard';
-import SettlementCard from '@/components/SettlementCard';
-import AddExpenseModal from '@/components/AddExpenseModal';
+import SettlementCard   from '@/components/SettlementCard';
+import AddExpenseModal  from '@/components/AddExpenseModal';
 
 export default function SessionPage() {
   return (
@@ -24,10 +24,10 @@ export default function SessionPage() {
 }
 
 function SessionContent() {
-  const params = useParams();
-  const router = useRouter();
+  const params    = useParams();
+  const router    = useRouter();
   const sessionId = params.id as string;
-  const { sessions, currentSessionId, setCurrentSession } = useSessionStore();
+  const { sessions, setCurrentSession } = useSessionStore();
   const { showToast } = useToast();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -36,180 +36,176 @@ function SessionContent() {
 
   const session = useMemo(() => sessions[sessionId], [sessions, sessionId]);
 
-  // Handle session loading and subscription
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
 
-    const verifyAndLoadSession = async () => {
-      let storeSession = useSessionStore.getState().sessions[sessionId];
-      
-      // If not in local storage, fetch from Supabase
-      if (!storeSession) {
+    const load = async () => {
+      let s = useSessionStore.getState().sessions[sessionId];
+      if (!s) {
         const exists = await useSessionStore.getState().fetchSessionFromDb(sessionId);
-        if (!exists && isMounted) {
-          router.replace('/');
-          return;
-        }
+        if (!exists && mounted) { router.replace('/'); return; }
       }
-      
-      if (isMounted) {
-        setCurrentSession(sessionId);
-      }
+      if (mounted) setCurrentSession(sessionId);
     };
 
-    verifyAndLoadSession();
-    
-    // Subscribe to real-time changes
-    const unsubscribe = useSessionStore.getState().subscribeToSession(sessionId);
-    
-    return () => {
-      isMounted = false;
-      unsubscribe();
-    };
-  }, [sessionId, setCurrentSession, router]); // Removed 'session' dependency so it doesn't constantly re-trigger
+    load();
+    const unsub = useSessionStore.getState().subscribeToSession(sessionId);
+    return () => { mounted = false; unsub(); };
+  }, [sessionId, setCurrentSession, router]);
 
-  if (!session) return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50/50">
-      <div className="w-12 h-12 border-4 border-sky-100 border-t-sky-600 rounded-full animate-spin" />
-    </div>
-  );
+  if (!session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="bg-blob-layer" />
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-12 h-12 border-4 border-sky-100 dark:border-sky-900 border-t-sky-600 rounded-full animate-spin" />
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Loading session…</p>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── handlers ── */
 
   const handleShare = async () => {
     const link = getShareableLink(sessionId);
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: `Join ${session.name} Session`,
-          text: `Split expenses with me for ${session.name}!`,
-          url: link,
-        });
+        await navigator.share({ title: `Join ${session.name}`, text: `Split with me — ${session.name}!`, url: link });
       } catch {
-        const success = await copyToClipboard(link);
-        if (success) showToast('Link copied! 📋');
+        if (await copyToClipboard(link)) showToast('Link copied! 📋');
       }
     } else {
-      const success = await copyToClipboard(link);
-      if (success) showToast('Link copied! 📋');
+      if (await copyToClipboard(link)) showToast('Link copied! 📋');
     }
   };
 
   const openAddModal = () => {
-    if (session.members.length === 0) {
-      showToast('Add at least one member first', 'warning');
-      return;
-    }
+    if (session.members.length === 0) { showToast('Add at least one member first', 'warning'); return; }
     setEditingExpense(undefined);
     setIsAddModalOpen(true);
   };
 
-  const handleEditExpense = (expense: Expense) => {
+  const handleEdit = (expense: Expense) => {
     setEditingExpense(expense);
     setIsAddModalOpen(true);
   };
 
+  const TABS = [
+    { id: 'expenses',   label: 'Expenses', icon: Clock           },
+    { id: 'balances',   label: 'Balances', icon: SlidersHorizontal },
+    { id: 'settlement', label: 'Settle',   icon: Settings         },
+  ] as const;
+
   return (
-    <main className="min-h-screen app-container p-4 pb-28 animate-fade-in">
-      {/* Header */}
-      <header className="flex items-center justify-between py-4 mb-2">
-        <div className="flex items-center gap-3">
+    <main className="min-h-screen app-container p-4 pb-28 animate-[fade-in_0.25s_ease-out]">
+      <div className="bg-blob-layer" />
+
+      {/* ── Header ── */}
+      <header className="flex items-center justify-between py-4 mb-2 gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <button
             onClick={() => router.push('/')}
-            className="btn-ghost p-2 rounded-2xl bg-white/50 border border-white hover:bg-white"
+            className="btn-ghost p-2 rounded-2xl
+                       bg-white/60 dark:bg-slate-800/60
+                       border border-white/80 dark:border-slate-700/50
+                       hover:bg-white dark:hover:bg-slate-800
+                       backdrop-blur-sm shadow-sm flex-shrink-0"
           >
             <ArrowLeft size={20} />
           </button>
-          <div>
-            <h1 className="text-2xl font-heading font-black text-slate-900 leading-tight truncate max-w-[170px]">
+
+          <div className="min-w-0">
+            <h1 className="text-2xl font-heading font-black text-slate-900 dark:text-white leading-tight truncate max-w-[160px]">
               {session.name}
             </h1>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <button 
-                onClick={async () => {
-                  const success = await copyToClipboard(sessionId);
-                  if (success) showToast('Copied! 📋', 'success');
-                }}
-                className="flex items-center gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded-full transition-colors cursor-pointer group"
-                title="Copy Session Code"
-              >
-                CODE: <span className="text-slate-700">{sessionId}</span>
-                <Copy size={10} className="text-slate-400 group-hover:text-slate-600 ml-0.5" />
-              </button>
-            </div>
+            <button
+              onClick={async () => {
+                if (await copyToClipboard(sessionId)) showToast('Copied! 📋', 'success');
+              }}
+              className="flex items-center gap-1 mt-0.5
+                         text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest
+                         bg-white/60 dark:bg-slate-800/50
+                         hover:bg-white dark:hover:bg-slate-800
+                         px-2 py-0.5 rounded-full border border-white/70 dark:border-slate-700/50
+                         transition-colors cursor-pointer group"
+              title="Copy Session Code"
+            >
+              CODE: <span className="text-slate-700 dark:text-slate-200">{sessionId}</span>
+              <Copy size={10} className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 ml-0.5" />
+            </button>
           </div>
         </div>
-        <button
-          onClick={handleShare}
-          className="btn-secondary px-3 py-2 text-sky-600 bg-white/70 border-white hover:bg-white rounded-2xl shadow-sm text-sm font-bold gap-2"
-        >
-          <Share2 size={16} /> Share
-        </button>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <ThemeToggle />
+          <button
+            onClick={handleShare}
+            className="btn-secondary px-3 py-2 rounded-2xl shadow-sm text-sm font-bold gap-2
+                       text-sky-600 dark:text-sky-400
+                       bg-white/70 dark:bg-slate-800/70
+                       border-white/80 dark:border-slate-700/50
+                       hover:bg-white dark:hover:bg-slate-800"
+          >
+            <Share2 size={16} /> Share
+          </button>
+        </div>
       </header>
 
-      {/* Tabs */}
-      <nav className="sticky top-2 z-30 mb-6 bg-white/40 backdrop-blur-xl p-1.5 rounded-2xl border border-white/50 shadow-lg shadow-sky-500/5 flex">
-        {[
-          { id: 'expenses', label: 'Expenses', icon: Clock },
-          { id: 'balances', label: 'Balances', icon: SlidersHorizontal },
-          { id: 'settlement', label: 'Settle', icon: Settings },
-        ].map((tab) => (
+      {/* ── Tab nav ── */}
+      <nav className="sticky top-2 z-30 mb-6 glass-nav p-1.5 rounded-2xl flex">
+        {TABS.map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "flex-1 h-10 flex items-center justify-center gap-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-              activeTab === tab.id 
-                ? "bg-sky-600 text-white shadow-md shadow-sky-200" 
-                : "text-slate-500 hover:text-slate-900"
+              'flex-1 h-10 flex items-center justify-center gap-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all',
+              activeTab === tab.id
+                ? 'bg-sky-600 text-white shadow-md shadow-sky-400/30'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-white/30 dark:hover:bg-white/10'
             )}
           >
             <tab.icon size={14} strokeWidth={3} />
-            <span className={cn(activeTab === tab.id ? "block" : "hidden sm:block")}>{tab.label}</span>
+            <span className={cn(activeTab === tab.id ? 'block' : 'hidden sm:block')}>
+              {tab.label}
+            </span>
           </button>
         ))}
       </nav>
 
-      {/* Content Area */}
+      {/* ── Content ── */}
       <div className="space-y-6">
         {activeTab === 'expenses' && (
           <>
             <MembersCard sessionId={sessionId} members={session.members} />
-            <ExpenseListCard 
-              sessionId={sessionId} 
-              expenses={session.expenses} 
-              members={session.members} 
-              onEdit={handleEditExpense}
+            <ExpenseListCard
+              sessionId={sessionId}
+              expenses={session.expenses}
+              members={session.members}
+              onEdit={handleEdit}
               onAdd={openAddModal}
             />
           </>
         )}
-
         {activeTab === 'balances' && (
-          <BalanceSummaryCard 
-            members={session.members} 
-            expenses={session.expenses} 
-          />
+          <BalanceSummaryCard members={session.members} expenses={session.expenses} />
         )}
-
         {activeTab === 'settlement' && (
-          <SettlementCard 
-            session={session}
-            members={session.members} 
-            expenses={session.expenses} 
-          />
+          <SettlementCard session={session} members={session.members} expenses={session.expenses} />
         )}
       </div>
 
-      {/* Floating Action Button */}
+      {/* ── FAB ── */}
       <button
         onClick={openAddModal}
-        className="fab w-16 h-16 rounded-2xl shadow-xl shadow-sky-500/40 bottom-6 right-6"
+        className="fab w-16 h-16 rounded-2xl bottom-6 right-6"
         title="Add Expense"
         id="add-expense-fab"
       >
         <Plus size={32} strokeWidth={3} />
       </button>
 
-      {/* Modals */}
+      {/* ── Modal ── */}
       {isAddModalOpen && (
         <AddExpenseModal
           sessionId={sessionId}
