@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SplitEase ✨ — Smart Group Expense Splitter
 
-## Getting Started
+The ultimate group outing expense manager for hackathon champions! Focus on your trip, let us handle the math.
 
-First, run the development server:
+## 🚀 Mission
+SplitEase is a lightweight, **no-login**, mobile-first web app that simplifies group expenses and provides a **smart settlement** plan with the minimum number of transactions.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
+- **Instant Sessions**: Create or join sessions without an account.
+- **Smart Settlement**: High-performance algorithm that minimizes bank transfers.
+- **Flexible Splits**: Equal or custom amount splits per person.
+- **WhatsApp Export**: One-tap share of final settlements with your group.
+- **PDF Export**: Generate professional expense reports with one click.
+- **Premium UI**: Ultra-clean card-based responsive design with glassmorphism.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🧠 Smart Settlement Algorithm
+SplitEase uses a **greedy matching approach** based on graph theory to simplify debts:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Calculate Balances**: Compute net position for each member (Total Paid - Total Owed).
+2. **Classify**: Separate members into "Creditors" (+ve balance) and "Debtors" (-ve balance).
+3. **Sort**: Order both lists by magnitude (largest amounts first).
+4. **Iterative Matching**:
+   - Pair the largest creditor with the largest debtor.
+   - Settle the minimum of their absolute balances.
+   - Update those members' outstanding positions.
+   - Repeat until all debts are cleared.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This ensures you spend less time transferring money and more time enjoying your trip! 🌊
 
-## Learn More
+## 🛠️ Tech Stack
+- **Framework**: Next.js 15 (App Router)
+- **State**: Zustand (Persisted in LocalStorage)
+- **Styling**: Tailwind CSS v4 + Responsive Animations
+- **Icons**: Lucide React
+- **PDF**: jsPDF + jsPDF-AutoTable
+- **Language**: TypeScript
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Demo Data (Included)
+The "Goa Trip 2026" demo features:
+- 5 Predefined members
+- 10 Realistic trip expenses (Flight, Hotel, Scooters, Clubbing, etc.)
+- Complex mixed equal/selected splits
+- Calculated multi-step settlements for instant review
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📦 Getting Started
+1. Install dependencies: `npm install`
+2. Run development: `npm run dev`
+3. Hit the **"Try Demo"** button on the home page!
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+Built with ❤️ by the SplitEase Team (4 Agent Coordination)
