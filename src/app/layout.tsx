@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import GlobalBackground from "@/components/GlobalBackground";
 
 export const metadata: Metadata = {
   title: "SplitEase — Smart Group Expense Splitter",
@@ -49,10 +50,11 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        {/* Animated floating blob layer — sits behind all content */}
-        <div className="bg-blob-layer" aria-hidden="true" />
         <ThemeProvider>
-          {children}
+          <GlobalBackground />
+          <main className="relative z-10 flex flex-col min-h-screen">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>

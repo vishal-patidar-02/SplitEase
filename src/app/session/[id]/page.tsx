@@ -56,7 +56,6 @@ function SessionContent() {
   if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="bg-blob-layer" />
         <div className="flex flex-col items-center gap-3">
           <div className="w-12 h-12 border-4 border-sky-100 dark:border-sky-900 border-t-sky-600 rounded-full animate-spin" />
           <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Loading session…</p>
@@ -99,8 +98,6 @@ function SessionContent() {
 
   return (
     <main className="min-h-screen app-container p-4 pb-28 animate-[fade-in_0.25s_ease-out]">
-      <div className="bg-blob-layer" />
-
       {/* ── Header ── */}
       <header className="flex items-center justify-between py-4 mb-2 gap-3">
         <div className="flex items-center gap-3 min-w-0">

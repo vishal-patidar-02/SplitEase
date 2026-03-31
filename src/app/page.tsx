@@ -6,7 +6,6 @@ import { Plus, Link, Star, Globe, Laptop, Users, Zap, Wallet } from 'lucide-reac
 import { useSessionStore } from '@/lib/store';
 import { ToastProvider, useToast } from '@/components/Toast';
 import { ThemeToggle, useTheme } from '@/components/ThemeProvider';
-import { GradientWave } from '@/components/ui/gradient-wave';
 import { cn } from '@/lib/utils';
 
 export default function HomePage() {
@@ -17,14 +16,7 @@ export default function HomePage() {
   );
 }
 
-/* ── Light-mode GradientWave colours ── */
-const LIGHT_COLORS = [
-  "#e0f2fe", "#bae6fd", "#7dd3fc", "#f0f9ff", "#e0f2fe",
-];
-/* ── Dark-mode GradientWave colours ── */
-const DARK_COLORS = [
-  "#0c4a6e", "#0369a1", "#075985", "#0f172a", "#0c4a6e",
-];
+
 
 function HomeContent() {
   const router = useRouter();
@@ -37,7 +29,7 @@ function HomeContent() {
   const [loading, setLoading]         = useState(false);
   const [activeTab, setActiveTab]     = useState<'create' | 'join'>('create');
 
-  const gradientColors = theme === 'dark' ? DARK_COLORS : LIGHT_COLORS;
+
 
   const handleCreate = () => {
     if (!sessionName.trim()) { showToast('Please enter a trip name', 'warning'); return; }
@@ -73,15 +65,6 @@ function HomeContent() {
 
   return (
     <main className="relative min-h-screen overflow-hidden">
-      {/* WebGL animated gradient background */}
-      <GradientWave
-        colors={gradientColors}
-        shadowPower={4}
-        darkenTop={false}
-        noiseFrequency={[0.0001, 0.0002]}
-        deform={{ incline: 0.2, noiseAmp: 120, noiseFlow: 2.5 }}
-      />
-
       {/* Theme toggle — top right */}
       <div className="absolute top-5 right-5 z-20">
         <ThemeToggle />

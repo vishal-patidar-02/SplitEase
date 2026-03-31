@@ -428,7 +428,7 @@ void main(){
     if(u_active_colors[i]==1.){
       WaveLayers layer=u_waveLayers[i];
       float layerNoise=smoothstep(layer.noiseFloor,layer.noiseCeil,snoise(vec3(noiseCoord.x*layer.noiseFreq.x+time*layer.noiseFlow,noiseCoord.y*layer.noiseFreq.y,time*layer.noiseSpeed+layer.noiseSeed))/2.+.5);
-      v_color=blendNormal(v_color,layer.color,pow(layerNoise,4.));
+      v_color=blendNormal(v_color,layer.color,pow(layerNoise,2.5));
     }
   }
   gl_Position=projectionMatrix*modelViewMatrix*vec4(pos,1.);
@@ -558,7 +558,7 @@ export function GradientWave({
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 z-0 w-full h-full overflow-hidden ${className}`}
+      className={`fixed inset-0 z-[-1] w-full h-full overflow-hidden ${className}`}
     />
   );
 }
