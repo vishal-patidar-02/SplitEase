@@ -92,8 +92,14 @@ export default function ExpenseListCard({ sessionId, expenses, members, onEdit, 
                   <div className="font-extrabold text-sky-600 dark:text-sky-400 text-base">
                     {formatCurrency(expense.amount)}
                   </div>
-                  <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5">
-                    PAID BY {getName(payerId).toUpperCase()}
+                  <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 mt-0.5 uppercase">
+                    {expense.payers.length === 1 ? (
+                      <>PAID BY {getName(expense.payers[0].memberId)}</>
+                    ) : expense.payers.length === 2 ? (
+                      <>PAID BY {getName(expense.payers[0].memberId)} & {getName(expense.payers[1].memberId)}</>
+                    ) : (
+                      <>PAID BY {getName(expense.payers[0].memberId)} & {expense.payers.length - 1} OTHERS</>
+                    )}
                   </div>
                 </div>
               </div>
