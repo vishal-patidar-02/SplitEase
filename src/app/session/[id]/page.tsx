@@ -14,6 +14,7 @@ import ExpenseListCard  from '@/components/ExpenseListCard';
 import BalanceSummaryCard from '@/components/BalanceSummaryCard';
 import SettlementCard   from '@/components/SettlementCard';
 import AddExpenseModal  from '@/components/AddExpenseModal';
+import UserGuide        from '@/components/UserGuide';
 
 export default function SessionPage() {
   return (
@@ -135,6 +136,7 @@ function SessionContent() {
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
+          <UserGuide />
           <ThemeToggle />
           <button
             onClick={handleShare}

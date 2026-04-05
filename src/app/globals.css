@@ -805,4 +805,221 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* ============================================
+   STITCH OCEANIC GLASS — UI/UX UPGRADES
+   Applied from Stitch MCP "Oceanic Horizon"
+   design system recommendations
+   ============================================ */
+
+/* ── Enhanced card depth with frosted edge ── */
+.card {
+  box-shadow:
+    var(--shadow-card),
+    0 0 0 1px var(--card-border) inset,
+    0 0 0 0.5px rgba(255, 255, 255, 0.4) inset;
+}
+
+.dark .card {
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.35),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(51, 65, 85, 0.55) inset,
+    0 0 0 0.5px rgba(255, 255, 255, 0.04) inset;
+}
+
+/* ── Ambient‑tinted shadow for elevated elements ── */
+.shadow-ocean {
+  box-shadow: 0 20px 40px rgba(0, 56, 93, 0.08), 0 4px 8px rgba(0, 56, 93, 0.04);
+}
+
+.dark .shadow-ocean {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* ── Pill button variant (full-rounded for chips & CTAs) ── */
+.btn-pill {
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.65rem 1.4rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+}
+
+.btn-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.45);
+}
+
+.btn-pill:active {
+  transform: scale(0.97);
+}
+
+/* ── Improved input: Oceanic fill-style ── */
+.input:focus {
+  border-color: var(--color-primary-400);
+  background: var(--color-surface);
+  box-shadow:
+    0 0 0 3px rgba(14, 165, 233, 0.12),
+    0 0 0 1px rgba(14, 165, 233, 0.3);
+  outline: none;
+}
+
+/* ── Surface tonal layers ── */
+.surface-low {
+  background: #eef1f3;
+}
+
+.dark .surface-low {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.surface-raised {
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 56, 93, 0.06);
+}
+
+.dark .surface-raised {
+  background: rgba(30, 41, 59, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Expense row zebra tint (every-other subtle toning) ── */
+.expense-row-alt {
+  background: rgba(241, 245, 249, 0.5);
+}
+
+.dark .expense-row-alt {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+/* ── Enhanced FAB with deeper glow ── */
+.fab {
+  box-shadow:
+    0 10px 24px rgba(14, 165, 233, 0.45),
+    0 4px 8px rgba(14, 165, 233, 0.2),
+    0 0 0 4px rgba(14, 165, 233, 0.12);
+}
+
+.fab:hover {
+  box-shadow:
+    0 16px 32px rgba(14, 165, 233, 0.55),
+    0 6px 12px rgba(14, 165, 233, 0.3),
+    0 0 0 6px rgba(14, 165, 233, 0.1);
+}
+
+/* ── Animated selection chip ── */
+.chip-selected {
+  animation: chip-pop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes chip-pop {
+  from { transform: scale(0.9); }
+  to   { transform: scale(1); }
+}
+
+/* ── Ghost border at low opacity (accessibility) ── */
+.ghost-border {
+  border: 1px solid rgba(171, 173, 175, 0.15);
+}
+
+.dark .ghost-border {
+  border: 1px solid rgba(51, 65, 85, 0.25);
+}
+
+/* ── Smooth tab transitions ── */
+.tab-indicator {
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ── Premium hero gradient background overlay ── */
+.hero-glow {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%,
+    rgba(56, 189, 248, 0.08) 0%,
+    transparent 70%);
+  pointer-events: none;
+}
+
+.dark .hero-glow {
+  background: radial-gradient(ellipse 80% 60% at 50% 0%,
+    rgba(14, 165, 233, 0.07) 0%,
+    transparent 70%);
+}
+
+/* ── Avatar ring upgrade ── */
+.avatar {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.dark .avatar {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(30, 41, 59, 0.9);
+}
+
+/* ── Refined scrollbar ── */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
+}
+
+/* ── Settlement transaction card depth ── */
+.settlement-row {
+  background: linear-gradient(135deg,
+    rgba(240, 249, 255, 0.7) 0%,
+    rgba(219, 234, 254, 0.5) 100%);
+}
+
+.dark .settlement-row {
+  background: linear-gradient(135deg,
+    rgba(12, 74, 110, 0.18) 0%,
+    rgba(30, 58, 138, 0.12) 100%);
+}
+
+/* ── Balance bar glow ── */
+.balance-bar-positive {
+  background: linear-gradient(90deg, #34d399, #10b981);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.balance-bar-negative {
+  background: linear-gradient(90deg, #f87171, #ef4444);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+/* ── User guide help button pulse ── */
+#user-guide-btn {
+  animation: guide-breathe 4s ease-in-out infinite;
+}
+
+@keyframes guide-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+  50%       { box-shadow: 0 0 0 5px rgba(14, 165, 233, 0.12); }
+}
+
+/* ── Home page session card highlight on focus ── */
+#create-session-name:focus,
+#join-session-id:focus {
+  border-color: var(--color-primary-400);
+  box-shadow:
+    0 0 0 4px rgba(14, 165, 233, 0.1),
+    0 0 20px rgba(14, 165, 233, 0.05);
 }

@@ -1,6 +1,6 @@
 # SplitEase ✨ — Smart Group Expense Splitter
 
-The ultimate group outing expense manager for hackathon champions! Focus on your trip, let us handle the math.
+The ultimate group outing expense manager. Focus on your trip, let us handle the math.
 
 Built for speed, SplitEase is a **no-login**, **hybrid-local**, and **cloud-synced** group expense manager that handles everyone from single travelers to large squads.
 
@@ -67,7 +67,7 @@ This ensures you spend less time transferring money and more time enjoying your 
    ```bash
    npm run dev
    ```
-4. Open [http://localhost:3000](http://localhost:3000) and explore the **"Try Demo"** session!
+4. Open [http://localhost:3000](http://localhost:3000) and start your first session!
 
 ---
 Built with ❤️ by the **SplitEase Team** (AI-Powered Coordination)

@@ -209,7 +209,7 @@ export default function AddExpenseModal({ sessionId, members, onClose, editExpen
           {/* Paid By (Multi-Payer) */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5 focus-within:">
+              <label className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
                 <Users size={14} /> Paid by
               </label>
               {payerIds.length > 1 && (
@@ -419,7 +419,7 @@ export default function AddExpenseModal({ sessionId, members, onClose, editExpen
           {/* Submit */}
           <button
             onClick={handleSubmit}
-            className="btn-primary w-full h-13 text-base font-black tracking-wide"
+            className="btn-primary w-full h-14 text-base font-black tracking-wide"
             id="submit-expense"
           >
             {editExpense ? '✏️ Update Expense' : '✅ Add Expense'}

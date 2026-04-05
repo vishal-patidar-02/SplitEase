@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Link, Star, Globe, Laptop, Users, Zap, Wallet } from 'lucide-react';
+import { Plus, Link, Globe, Laptop, Users, Zap, Wallet } from 'lucide-react';
 import { useSessionStore } from '@/lib/store';
 import { ToastProvider, useToast } from '@/components/Toast';
-import { ThemeToggle, useTheme } from '@/components/ThemeProvider';
+import { ThemeToggle } from '@/components/ThemeProvider';
+import UserGuide from '@/components/UserGuide';
 import { cn } from '@/lib/utils';
 
 export default function HomePage() {
@@ -20,9 +21,8 @@ export default function HomePage() {
 
 function HomeContent() {
   const router = useRouter();
-  const { createSession, joinSession, loadDemoData } = useSessionStore();
+  const { createSession, joinSession } = useSessionStore();
   const { showToast } = useToast();
-  const { theme } = useTheme();
 
   const [sessionName, setSessionName] = useState('');
   const [sessionId, setSessionId]     = useState('');
@@ -50,21 +50,15 @@ function HomeContent() {
     }
   };
 
-  const handleDemo = async () => {
-    showToast('Joining Goa Trip Demo 🏖️', 'info');
-    setLoading(true);
-    const demoId = 'demo-goa-2026';
-    const success = await joinSession(demoId, 'Guest');
-    if (success) {
-      router.push(`/session/${demoId}`);
-    } else {
-      const id = loadDemoData();
-      router.push(`/session/${id}`);
-    }
-  };
+
 
   return (
     <main className="relative min-h-screen overflow-hidden">
+      {/* User guide — top left */}
+      <div className="absolute top-5 left-5 z-20">
+        <UserGuide />
+      </div>
+
       {/* Theme toggle — top right */}
       <div className="absolute top-5 right-5 z-20">
         <ThemeToggle />
@@ -189,30 +183,6 @@ function HomeContent() {
 
         {/* ── Promo cards ── */}
         <div className="w-full flex flex-col gap-3">
-          <button
-            onClick={handleDemo}
-            className="flex items-center gap-4 p-4 rounded-2xl
-                       bg-gradient-to-br from-amber-50/90 to-orange-50/90
-                       dark:from-amber-900/30 dark:to-orange-900/20
-                       border border-amber-200/60 dark:border-amber-700/40
-                       hover:border-amber-400 dark:hover:border-amber-500
-                       backdrop-blur-sm
-                       group transition-all text-left shadow-sm"
-            id="demo-button"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-amber-400 dark:bg-amber-500
-                            flex items-center justify-center shadow-lg shadow-amber-200/50
-                            group-hover:scale-110 group-hover:rotate-3 transition-all">
-              <Star size={24} className="text-white" fill="currentColor" />
-            </div>
-            <div>
-              <div className="font-extrabold text-amber-900 dark:text-amber-200 leading-tight">Fast-forward?</div>
-              <p className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mt-0.5">
-                Try the Hackathon Demo
-              </p>
-            </div>
-          </button>
-
           <a
             href="https://github.com/SplitEase"
             target="_blank"
@@ -232,7 +202,7 @@ function HomeContent() {
             <div>
               <div className="font-extrabold text-slate-900 dark:text-white leading-tight">Open Source</div>
               <p className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">
-                Built by SplitEase Team
+                Built by Vishal Patidar.
               </p>
             </div>
           </a>

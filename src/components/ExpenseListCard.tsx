@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Edit2, Trash2, Calendar, Tag, Plus, Receipt } from 'lucide-react';
 import { Expense, Member } from '@/lib/types';
 import { cn, formatCurrency, formatDate, getCategoryInfo, getInitials, getAvatarColor } from '@/lib/utils';
@@ -15,15 +16,21 @@ interface ExpenseListCardProps {
 }
 
 export default function ExpenseListCard({ sessionId, expenses, members, onEdit, onAdd }: ExpenseListCardProps) {
-  const { deleteExpense } = useSessionStore();
-  const { showToast }     = useToast();
+  const { deleteExpense }   = useSessionStore();
+  const { showToast }       = useToast();
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
   const getName = (id: string) => members.find(m => m.id === id)?.name || 'Unknown';
 
   const handleDelete = (id: string, title: string) => {
-    if (window.confirm(`Delete "${title}"?`)) {
+    if (pendingDelete === id) {
       deleteExpense(sessionId, id);
-      showToast('Expense deleted');
+      showToast(`"${title}" deleted`);
+      setPendingDelete(null);
+    } else {
+      setPendingDelete(id);
+      // Auto-cancel confirmation after 3 s
+      setTimeout(() => setPendingDelete(prev => prev === id ? null : prev), 3000);
     }
   };
 
@@ -130,17 +137,27 @@ export default function ExpenseListCard({ sessionId, expenses, members, onEdit, 
                   <button
                     onClick={() => onEdit(expense)}
                     className="p-1.5 text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/30 rounded-lg transition-colors"
-                    title="Edit"
+                    title="Edit expense"
                   >
                     <Edit2 size={14} />
                   </button>
-                  <button
-                    onClick={() => handleDelete(expense.id, expense.title)}
-                    className="p-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 size={14} />
-                  </button>
+                  {pendingDelete === expense.id ? (
+                    <button
+                      onClick={() => handleDelete(expense.id, expense.title)}
+                      className="flex items-center gap-1 px-2 py-1 text-[10px] font-black text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors animate-[scale-in_0.15s_ease-out]"
+                      title="Tap to confirm delete"
+                    >
+                      <Trash2 size={11} /> Confirm?
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleDelete(expense.id, expense.title)}
+                      className="p-1.5 text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                      title="Delete expense"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
