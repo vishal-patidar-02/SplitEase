@@ -11,6 +11,7 @@ SplitEase is a lightweight, mobile-first web app that simplifies group expenses 
 
 ## ✨ Key Features (Pro Tier)
 - **Multi-Payer Support (NEW)**: One expense, multiple contributors. Perfect for large hotel bills or shared car rentals where several people pitch in different amounts.
+- **Receipt OCR Import (NEW)**: Upload a receipt image, auto-extract line items, review assignments, and convert directly into split-ready expenses.
 - **Global WebGL Background**: A premium, centralized WebGL-powered wave gradient that stays consistent and fluid across all pages (Home & Session) without glitches.
 - **Cloud Sync (Supabase)**: Your data is automatically backed up to the cloud and synced across devices in real-time.
 - **Real-time Collaboration**: See changes from other group members instantly without reloading.
@@ -62,7 +63,11 @@ This ensures you spend less time transferring money and more time enjoying your 
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   OCR_SPACE_API_KEY=your_ocr_space_key_optional
    ```
+   Notes:
+   - `OCR_SPACE_API_KEY` is optional. If missing, the app uses the OCR.space trial key (`helloworld`) with lower reliability.
+   - When OCR fails, the app opens a manual review fallback draft so you can still import the receipt.
 3. Run development server:
    ```bash
    npm run dev
