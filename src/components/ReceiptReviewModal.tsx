@@ -270,7 +270,7 @@ export default function ReceiptReviewModal({
           <div className="space-y-3 mb-5">
             {localDraft.lineItems.map((line) => (
               <div key={line.id} className="border border-slate-200 dark:border-slate-700 rounded-xl p-3">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-start gap-2 mb-2">
                   <button
                     onClick={() => toggleLineInclude(line.id)}
                     className={cn(
@@ -282,17 +282,23 @@ export default function ReceiptReviewModal({
                   >
                     {line.include && <Check size={12} />}
                   </button>
-                  <input
-                    value={line.name}
-                    onChange={(event) => updateLine(line.id, 'name', event.target.value)}
-                    className="input h-9 flex-1"
-                  />
-                  <input
-                    type="number"
-                    value={line.totalPrice}
-                    onChange={(event) => updateLine(line.id, 'totalPrice', event.target.value)}
-                    className="input h-9 w-28 text-right"
-                  />
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <input
+                      value={line.name}
+                      onChange={(event) => updateLine(line.id, 'name', event.target.value)}
+                      className="input h-10 w-full text-sm font-semibold"
+                      placeholder="Item name"
+                    />
+                    <div className="flex justify-end">
+                      <input
+                        type="number"
+                        value={line.totalPrice}
+                        onChange={(event) => updateLine(line.id, 'totalPrice', event.target.value)}
+                        className="input h-9 w-36 text-right font-semibold"
+                        placeholder="Amount"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
