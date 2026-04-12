@@ -1,6 +1,14 @@
 import { ReceiptDraft, ReceiptLineItem } from './types';
 import { parseMoney, roundMoney } from './utils';
 
+function isSummaryOrPaymentLine(lower: string): boolean {
+  return /\b(subtotal|total|grand total|amount due|amount paid|net amount|round off|discount|tax|vat|gst|cgst|sgst|tip|service charge|payment|paid via|upi|card|cash|debit|credit|change|balance)\b/.test(lower);
+}
+
+function amountsEqual(a: number, b: number): boolean {
+  return Math.abs(roundMoney(a) - roundMoney(b)) <= 0.01;
+}
+
 function extractAmount(line: string): number {
   const matches = line.match(/(\d+[\d,]*[.]\d{2})/g);
   if (!matches || matches.length === 0) return 0;
@@ -55,6 +63,7 @@ export function parseReceiptText(rawText: string): ReceiptDraft {
 
   const lineItems: ReceiptLineItem[] = [];
 
+  // First pass: extract totals and summary values.
   for (const line of lines) {
     const lower = line.toLowerCase();
     const amount = extractAmount(line);
@@ -74,10 +83,21 @@ export function parseReceiptText(rawText: string): ReceiptDraft {
     }
     if (/\b(total|grand total|amount due)\b/.test(lower)) {
       total = Math.max(total, amount);
-      continue;
     }
+  }
 
-    if (/\b(qty|quantity|invoice|phone|cash|card|date|time|table)\b/.test(lower)) {
+  // Second pass: extract product/service line items.
+  for (const line of lines) {
+    const lower = line.toLowerCase();
+    const amount = extractAmount(line);
+    if (amount <= 0) continue;
+
+    if (isSummaryOrPaymentLine(lower)) continue;
+
+    // Guard: if line amount equals detected total, it is likely a payment summary row.
+    if (total > 0 && amountsEqual(amount, total)) continue;
+
+    if (/\b(qty|quantity|invoice|phone|date|time|table|token|order|bill no)\b/.test(lower)) {
       continue;
     }
 
